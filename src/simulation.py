@@ -7,6 +7,7 @@ from update_csv import update_csv
 from simulation_parameters import simulation_parameters
 import argparse
 import os
+import pandas as pd
 
 
 def save_model_figure(nanowire, suffix, data_folder):
@@ -105,44 +106,49 @@ def simulation_single(params, row="skip", date="no-date", scratch="./Scratch/"):
     energies = np.arange(-0.120 * nanowire.t, 0.120 * nanowire.t, 0.001 * nanowire.t)
 
     spectrum_data = nanowire.spectrum(bValues=np.linspace(0, params["b_max"], 81))
-    conductance_data = nanowire.conductances(
-        bValues=np.linspace(0, params["b_max"], 81), energies=energies
-    )
 
     # Save figures and data, and get critical fields.
     spectrum_critical_field = spectrum(spectrum_data, data_suffix, data_folder)
-    conductance_critical_field = conductance(conductance_data, data_suffix, data_folder)
 
-    # Save figure of the conductance at a given field.
-    individual_conductance(conductance_data, data_suffix, data_folder)
 
-    # Filenames of the saved data and figures.
-    conductance_data_filename = data_folder + "/cond/cond_" + data_suffix + ".dat"
-    spectrum_data_filename = data_folder + "/spec/spec_" + data_suffix + ".dat"
-    conductance_figure_filename = data_folder + "/fig-conductance/model" + data_suffix + ".png"
-    spectrum_figure_filename = data_folder + "/fig-spectrum/model" + data_suffix + ".png"
-    individual_conductance_figure_filename = data_folder + "/fig-ind-conductance/model" + data_suffix + ".png"
+    # conductance_data = nanowire.conductances(
+    #     bValues=np.linspace(0, params["b_max"], 81), energies=energies
+    # )
 
-    # Log which data has been saved. Alter this function.
-    update_csv(
-        params["wire_width"],
-        params["N"],
-        params["effective_mass"],
-        params["muSc"],
-        params["alpha"],
-        params["M"],
-        params["added_sinusoid"],
-        params["ratio"],
-        conductance_data_filename,
-        spectrum_data_filename,
-        conductance_figure_filename,
-        spectrum_figure_filename,
-        individual_conductance_figure_filename,
-        scratch + date + "/wiresdata.csv",
-        spectrum_critical_field,
-        conductance_critical_field,
-        data_folder,
-    )
+
+
+    # conductance_critical_field = conductance(conductance_data, data_suffix, data_folder)
+
+    # # Save figure of the conductance at a given field.
+    # individual_conductance(conductance_data, data_suffix, data_folder)
+
+    # # Filenames of the saved data and figures.
+    # conductance_data_filename = data_folder + "/cond/cond_" + data_suffix + ".dat"
+    # spectrum_data_filename = data_folder + "/spec/spec_" + data_suffix + ".dat"
+    # conductance_figure_filename = data_folder + "/fig-conductance/model" + data_suffix + ".png"
+    # spectrum_figure_filename = data_folder + "/fig-spectrum/model" + data_suffix + ".png"
+    # individual_conductance_figure_filename = data_folder + "/fig-ind-conductance/model" + data_suffix + ".png"
+
+    # # Log which data has been saved. Alter this function.
+    # update_csv(
+    #     params["wire_width"],
+    #     params["N"],
+    #     params["effective_mass"],
+    #     params["muSc"],
+    #     params["alpha"],
+    #     params["M"],
+    #     params["added_sinusoid"],
+    #     params["ratio"],
+    #     conductance_data_filename,
+    #     spectrum_data_filename,
+    #     conductance_figure_filename,
+    #     spectrum_figure_filename,
+    #     individual_conductance_figure_filename,
+    #     scratch + date + "/wiresdata.csv",
+    #     spectrum_critical_field,
+    #     conductance_critical_field,
+    #     data_folder,
+    # )
 
 
 def simulation_all(params):
@@ -151,6 +157,10 @@ def simulation_all(params):
         new_params["N"] = N
         simulation_single(new_params)
 
+def simulation_all_csv(csv_file, date):
+    df = pd.read_csv(csv_file)
+    for index, row in df.iterrows():
+        simulation_single(row,row=index,date=date)
 
 if __name__ == "__main__":
     simulation_all(simulation_parameters)

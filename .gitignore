@@ -24,3 +24,11 @@ data/
 .vscode/
 
 Scratch
+
+nanowire-env/
+
+*.ipynb
+
+test*
+
+resources-needed

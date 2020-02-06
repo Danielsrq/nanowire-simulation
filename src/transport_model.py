@@ -38,15 +38,8 @@ def onsiteSc(site, muSc, t, B, Delta, M, addedSinu, barrier_length, stagger_rati
     gfactor = 2  # should be 10 in the real units
     if addedSinu:
         counter = np.mod(site.pos[0] - 1 - barrier_length, 16)
-        if -1 < counter < 4:
-            theta = 0
-        elif 3 < counter < 8:
-            theta = 0.2 * (counter - 3) * np.pi
-        elif 7 < counter < 12:
-            theta = np.pi
-        else:
-            theta = 0.2 * (counter - 6) * np.pi
-
+        theta = counter * np.pi / 16
+        
         return (
             (4 * t - muSc) * tauZ
             + 0.5 * gfactor * bohr_magneton * B * sigX
