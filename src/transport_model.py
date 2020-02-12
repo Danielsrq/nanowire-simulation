@@ -36,20 +36,21 @@ def sinuB(theta, stagger_ratio):
     return sigY * np.cos(theta) + sigX * np.sin(theta)
 # This is the onsite Hamiltonian, this is where the B-field can be varied.
 
-def onsiteSc(site, muSc, t, B, Delta, M, addedSinu, barrier_length, stagger_ratio):
+def onsiteSc(site, muSc, t, B, Delta, M, addedSinu, barrier_length, stagger_ratio, user_B):
     gfactor = 10  # should be 10 in the real units
-    if addedSinu:
+    if addedSinu == "sine":
         counter = np.mod(site.pos[0] - 1 - barrier_length, 16)
-        if -1 < counter < 4:
-            theta = 0
-        elif 3 < counter < 8:
-            theta = 0.2 * (counter - 3) * np.pi
-        elif 7 < counter < 12:
-            theta = np.pi
-        else:
-            theta = 0.2 * (counter - 6) * np.pi
+        theta = (counter/16) * 2*np.pi
+        
+        # if -1 < counter < 4:
+        #     theta = 0
+        # elif 3 < counter < 8:
+        #     theta = 0.2 * (counter - 3) * np.pi
+        # elif 7 < counter < 12:
+        #     theta = np.pi
+        # else:
+        #     theta = 0.2 * (counter - 6) * np.pi
 
-  #      print('onsiteSC', (4 * t - muSc))
 
         return (
             (4 * t - muSc) * tauZ
@@ -57,6 +58,24 @@ def onsiteSc(site, muSc, t, B, Delta, M, addedSinu, barrier_length, stagger_rati
             + Delta * tauX
             + 0.5 * gfactor * bohr_magneton * M * sinuB(theta, stagger_ratio)
         )
+    
+    elif addedSinu == "user1D":
+        """ Assumes 2D array where 1st row is Bx and 2nd row By """
+        current_xsite = site.pos[0]
+        return ( 
+            (4 * t - muSc)*tauZ + (gfactor*bohr_magneton*B*sigX) + Delta*tauX 
+            + user_B[0][current_xsite] * sigX 
+            + user_B[1][current_xsite] * sigY )
+    
+    elif addedSinu == "user2D":
+        """ Assumes 2D array which maps onto the space of the field such that (i,j) 
+        is the Bvector as position (i,j); user_B[i][j][0] and user_B[i][j][1] are Bx and By"""
+        current_xsite, current_ysite = site.pos[0], site.pos[1]
+        return ( 
+            (4 * t - muSc)*tauZ + (gfactor*bohr_magneton*B*sigX) + Delta*tauX 
+            + user_B[current_xsite][current_ysite][0] * sigX 
+            + user_B[current_xsite][current_ysite][1] * sigY )
+    
     else:
         return (
             (4 * t - muSc) * tauZ

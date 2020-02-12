@@ -61,6 +61,7 @@ def simulation_single(params):
         mu=params["mu"],
         delta=params["delta"],
         barrier=params["barrier"],
+        user_B=params["user_B"],
     )
     spectrum_data = nanowire.spectrum(bValues=np.linspace(0, params["b_max"], 21))
     fig = plt.figure()
@@ -79,7 +80,7 @@ params['wire_width'] = 7
 params['N'] = 7
 params['ratio'] = 0.5
 params['M'] = 1
-params['added_sinusoid'] = False
+params['added_sinusoid'] = "sine"
 params['effective_mass'] = 0.023
 params['alpha_R'] = 0.32
 params['muSc'] = 0.01661
@@ -87,6 +88,7 @@ params['mu'] = 0.019
 params['delta'] = 4.5E-05
 params['barrier'] = 0.1
 params['b_max'] = 1
+params["user_B"] = None
 
 # testing cost function
 spectrum_data = simulation_single(params)

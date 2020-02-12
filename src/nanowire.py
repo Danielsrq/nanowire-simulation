@@ -31,6 +31,7 @@ class Nanowire:
         mu=0.3,
         delta=0.1,
         barrier=2.0,
+        user_B = None
     ):
         # Wire Physical Properties
         self.width = width
@@ -47,6 +48,7 @@ class Nanowire:
 
         # Nanomagnet properties
         self.stagger_ratio = stagger_ratio
+        self.user_B = user_B
 
         # Previously hard-coded parameters
         self.mu = mu  # how is this different from muSc?
@@ -79,7 +81,8 @@ class Nanowire:
             addedSinu=self.addedSinu,
             M=self.M,
             stagger_ratio=self.stagger_ratio,
-            barrier_length=self.barrier_length
+            barrier_length=self.barrier_length,
+            user_B = self.user_B
         )
         for i in tqdm(
             range(np.size(bValues)),
@@ -121,7 +124,8 @@ class Nanowire:
             M=self.M,
             addedSinu=self.addedSinu,
             stagger_ratio=self.stagger_ratio,
-            barrier_length=self.barrier_length
+            barrier_length=self.barrier_length,
+            user_B = self.user_B
         )
         for i in tqdm(
             range(np.size(energies)),
