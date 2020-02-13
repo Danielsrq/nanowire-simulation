@@ -13,7 +13,9 @@ import scipy.sparse.linalg
 from nanomagnet_field import rick_fourier
 from transport_model import NISIN, barrier_region
 
-lattice_constant_InAs = 200 # angstrom # 6.0583E-10 # 20E-9 # might need to change this.
+# angstrom # 6.0583E-10 # 20E-9 # might need to change this.
+lattice_constant_InAs = 200
+
 
 class Nanowire:
     def __init__(
@@ -31,7 +33,7 @@ class Nanowire:
         mu=0.3,
         delta=0.1,
         barrier=2.0,
-        user_B = None
+        user_B=None
     ):
         # Wire Physical Properties
         self.width = width
@@ -40,7 +42,7 @@ class Nanowire:
         self.barrier_length = barrier_length
 
         # Superconducting components
-        self.t = 3.83 / (effective_mass*(lattice_constant_InAs**2)) # (hbar**2)/(2*effective_mass*electron_mass*(lattice_constant_InAs**2))# 0.5 / effective_mass
+        self.t = 3.83 / (effective_mass*(lattice_constant_InAs**2))  # (hbar**2)/(2*effective_mass*electron_mass*(lattice_constant_InAs**2))# 0.5 / effective_mass
         self.M = M
         self.muSc = muSc
         self.alpha = alpha_R/lattice_constant_InAs
@@ -82,7 +84,7 @@ class Nanowire:
             M=self.M,
             stagger_ratio=self.stagger_ratio,
             barrier_length=self.barrier_length,
-            user_B = self.user_B
+            user_B=self.user_B
         )
         for i in tqdm(
             range(np.size(bValues)),
@@ -125,7 +127,7 @@ class Nanowire:
             addedSinu=self.addedSinu,
             stagger_ratio=self.stagger_ratio,
             barrier_length=self.barrier_length,
-            user_B = self.user_B
+            user_B=self.user_B
         )
         for i in tqdm(
             range(np.size(energies)),
@@ -163,7 +165,11 @@ class Nanowire:
         length = 8 * self.noMagnets - 2 + 2 * self.barrier_length
 
         return kwant.plotter.plot(syst, show=False, unit='nn', site_size=0.20,
-            site_color=lambda s: 'y' if barrier_region(s, self.barrier_length, length, self.width) else 'b')
+                                  site_color=lambda s: 'y'
+                                  if barrier_region(
+                                      s, self.barrier_length,
+                                      length, self.width) else 'b')
+
 
 def main():
     pass

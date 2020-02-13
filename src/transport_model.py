@@ -2,8 +2,10 @@ import kwant
 import numpy as np
 import tinyarray as ta
 
-bohr_magneton =  58E-6 # eVm # physical_constants['Bohr magneton'][0]
-lattice_constant_InAs = 200 # angstroms # 6.0583E-10 # 20E-3 # might need to change this.
+# eVm # physical_constants['Bohr magneton'][0]
+bohr_magneton = 58E-6
+# angstroms # 6.0583E-10 # 20E-3 # might need to change this.
+lattice_constant_InAs = 200
 
 s0 = np.identity(2)
 sZ = np.array([[1.0, 0.0], [0.0, -1.0]])
@@ -20,15 +22,18 @@ tauZsigX = ta.array(np.kron(sZ, sX))
 tauZsigY = ta.array(np.kron(sZ, sY))
 tauYsigY = ta.array(np.kron(sY, sY))
 
-lat = kwant.lattice.square(a=lattice_constant_InAs,norbs=4)
+lat = kwant.lattice.square(a=lattice_constant_InAs, norbs=4)
+
 
 def hopX(site0, site1, t, alpha):
-  #  print('hopx', -t * tauZ + 1j * alpha * tauZsigY)
+    # print('hopx', -t * tauZ + 1j * alpha * tauZsigY)
     return -t * tauZ + 1j * alpha * tauZsigY
 
+
 def hopY(site0, site1, t, alpha):
-  #  print('hopy', -t * tauZ - 1j * alpha * tauZsigX)
+    # print('hopy', -t * tauZ - 1j * alpha * tauZsigX)
     return -t * tauZ - 1j * alpha * tauZsigX
+
 
 def sinuB(theta, stagger_ratio):
     # ssin, scos = rick_fourier(theta)
@@ -36,12 +41,12 @@ def sinuB(theta, stagger_ratio):
     return sigY * np.cos(theta) + sigX * np.sin(theta)
 # This is the onsite Hamiltonian, this is where the B-field can be varied.
 
+
 def onsiteSc(site, muSc, t, B, Delta, M, addedSinu, barrier_length, stagger_ratio, user_B):
     gfactor = 10  # should be 10 in the real units
     if addedSinu == "sine":
         counter = np.mod(site.pos[0] - 1 - barrier_length, 16)
-        theta = (counter/16) * 2*np.pi
-        
+        theta = (counter/16) * 2*np.pi        
         # if -1 < counter < 4:
         #     theta = 0
         # elif 3 < counter < 8:
@@ -51,14 +56,13 @@ def onsiteSc(site, muSc, t, B, Delta, M, addedSinu, barrier_length, stagger_rati
         # else:
         #     theta = 0.2 * (counter - 6) * np.pi
 
-
         return (
             (4 * t - muSc) * tauZ
             + 0.5 * gfactor * bohr_magneton * B * sigX
             + Delta * tauX
             + 0.5 * gfactor * bohr_magneton * M * sinuB(theta, stagger_ratio)
         )
-    
+
     elif addedSinu == "user1D":
         """ Assumes 2D array where 1st row is Bx and 2nd row By """
         current_xsite = site.pos[0]
@@ -66,7 +70,7 @@ def onsiteSc(site, muSc, t, B, Delta, M, addedSinu, barrier_length, stagger_rati
             (4 * t - muSc)*tauZ + (gfactor*bohr_magneton*B*sigX) + Delta*tauX 
             + user_B[0][current_xsite] * sigX 
             + user_B[1][current_xsite] * sigY )
-    
+
     elif addedSinu == "user2D":
         """ Assumes 2D array which maps onto the space of the field such that (i,j) 
         is the Bvector as position (i,j); user_B[i][j][0] and user_B[i][j][1] are Bx and By"""
@@ -83,13 +87,16 @@ def onsiteSc(site, muSc, t, B, Delta, M, addedSinu, barrier_length, stagger_rati
             + Delta * tauX
         )
 
+
 def onsiteNormal(site, mu, t):
- #   print('onsitnormal', (4 * t - mu) * tauZ)
+    # print('onsitnormal', (4 * t - mu) * tauZ)
     return (4 * t - mu) * tauZ
 
+
 def onsiteBarrier(site, mu, t, barrier):
- #   print('onsitebarrier', (4 * t - mu + barrier) * tauZ)
+    # print('onsitebarrier', (4 * t - mu + barrier) * tauZ)
     return (4 * t - mu + barrier) * tauZ
+
 
 def make_lead(width, onsiteH=onsiteNormal, hopX=hopX, hopY=hopY):
     lead = kwant.Builder(
@@ -102,6 +109,7 @@ def make_lead(width, onsiteH=onsiteNormal, hopX=hopX, hopY=hopY):
     lead[kwant.builder.HoppingKind((1, 0), lat, lat)] = hopX
     lead[kwant.builder.HoppingKind((0, 1), lat, lat)] = hopY
     return lead
+
 
 def barrier_region(site, barrier_length, length, width):
     i = site//width
@@ -157,7 +165,7 @@ def make_wire(width, length, barrier_length, hamiltonian_wire=onsiteSc,
 
     return syst
 
-def NISIN(width=7, noMagnets=5, barrier_length=1):
 
+def NISIN(width=7, noMagnets=5, barrier_length=1):
     length = 8 * noMagnets - 2 + 2 * barrier_length  # "2*(noMagnets - 1)"
     return make_wire(width, length, barrier_length).finalized()
