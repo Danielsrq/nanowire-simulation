@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import more_itertools as mit
 import matplotlib.pyplot as plt
@@ -12,7 +13,7 @@ from nanowire import Nanowire
 def get_cost_from_spectrum(E: List[Array[np.float64]],
                            B_step: float,
                            cost_f: Callable[[List[float]], float],
-                           threshold=1E-6) -> float:
+                           threshold=1E-7) -> float:
     E = np.array(E)
     # Costs for each EigenE
     costs = []
@@ -37,7 +38,7 @@ def get_cost_from_spectrum(E: List[Array[np.float64]],
 
 
 def weighting(arr: Array[float, int]) -> float:
-    w1, w2 = 1, 1
+    w1, w2 = 0, 1
     Bcrit, B_width = w1 * arr[0], w2 * arr[1]
     return Bcrit + B_width
 
@@ -78,6 +79,8 @@ def acceptance_probability(old, new, T):
 
 def simulated_annealing(x0: dict, x0_str: [str], T: float,
                         T_min: float, alpha: float):
+    if not os.path.exists('./sim_annealing'):
+        os.makedirs('sim_annealing')
     max_costs = []
     max_actions = []
     max_cost = 0.0
@@ -85,7 +88,7 @@ def simulated_annealing(x0: dict, x0_str: [str], T: float,
     while T > T_min:
         count = 0
         while(count < 100):
-            spectrum_data = get_spectrum_data(x0)
+            spectrum_data = get_spectrum_data(x_new)
             B, E = spectrum_data['B'], spectrum_data['E']
             B_step = B[1] - B[0]
             cost_new = get_cost_from_spectrum(E, B_step, weighting)
@@ -103,7 +106,7 @@ def simulated_annealing(x0: dict, x0_str: [str], T: float,
             # Reset x_new to the latest accepted action
             x_new = x0.copy()
             # Make a move and make sure it is different from original
-            new_move = random.choice([1E-6, -1E-6])
+            new_move = random.choice([1E-3, -1E-3])
             x_new[param] += new_move
             count += 1
             print('max cost: ' + str(max_cost))
@@ -128,7 +131,7 @@ x0['muSc'] = 0.01661
 x0['barrier'] = 0.1
 
 x0_str = ['mu', 'muSc', 'barrier']
-T = 1.0
+T = 0.8 ** 10
 T_min = 0.00001
 alpha = 0.8
 simulated_annealing(x0, x0_str, T, T_min, alpha)
