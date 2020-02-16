@@ -21,7 +21,7 @@ class Nanowire:
     def __init__(
         self,
         width=5,
-        noMagnets=5,
+        length=5,
         dim=2,
         barrier_length=1,
         effective_mass=0.5,
@@ -33,11 +33,12 @@ class Nanowire:
         mu=0.3,
         delta=0.1,
         barrier=2.0,
-        user_B=None
+        user_B=None,
+        period= 16 # uses lattice size
     ):
         # Wire Physical Properties
         self.width = width
-        self.noMagnets = noMagnets
+        self.length = length
         self.dim = dim
         self.barrier_length = barrier_length
 
@@ -51,14 +52,18 @@ class Nanowire:
         # Nanomagnet properties
         self.stagger_ratio = stagger_ratio
         self.user_B = user_B
+        self.period = period
 
         # Previously hard-coded parameters
         self.mu = mu  # how is this different from muSc?
         self.delta = delta
         self.barrier = barrier
+        
+        # system
+        self.system = None
 
         # System
-        """self.system = NISIN(width=self.width, noMagnets=self.noMagnets, 
+        """self.system = NISIN(width=self.width, length=self.length, 
                                 barrier_length=self.barrier_length, M=self.M,
                                 addedSinu=self.addedSinu, 
                                 stagger_ratio=self.stagger_ratio
@@ -68,9 +73,10 @@ class Nanowire:
     def spectrum(self, bValues=np.linspace(0, 1.0, 201)):
         syst = NISIN(
             width=self.width,
-            noMagnets=self.noMagnets,
+            length=self.length,
             barrier_length=self.barrier_length,
         )
+        self.system = syst
         energies = []
         critB = 0
         params = dict(
@@ -84,11 +90,12 @@ class Nanowire:
             M=self.M,
             stagger_ratio=self.stagger_ratio,
             barrier_length=self.barrier_length,
-            user_B=self.user_B
+            user_B=self.user_B,
+            period=self.period
         )
         for i in tqdm(
             range(np.size(bValues)),
-            desc="Spec: NoMagnets = %i, added? %r" % (self.noMagnets, self.addedSinu),
+            desc="Spec: Length = %i, added? %r" % (self.length, self.addedSinu),
         ):
             b = bValues[i]
             params["B"] = b
@@ -111,7 +118,7 @@ class Nanowire:
     ):
         syst = NISIN(
             width=self.width,
-            noMagnets=self.noMagnets,
+            length=self.length,
             barrier_length=self.barrier_length
         )
         data = []
@@ -127,11 +134,12 @@ class Nanowire:
             addedSinu=self.addedSinu,
             stagger_ratio=self.stagger_ratio,
             barrier_length=self.barrier_length,
-            user_B=self.user_B
+            user_B=self.user_B,
+            period=self.period
         )
         for i in tqdm(
             range(np.size(energies)),
-            desc="Cond: NoMagnets = %i, added? %r" % (self.noMagnets, self.addedSinu),
+            desc="Cond: Length = %i, added? %r" % (self.length, self.addedSinu),
         ):
             cond = []
             energy = energies[i]
@@ -158,11 +166,11 @@ class Nanowire:
     def plot(self):
         syst = NISIN(
             width=self.width,
-            noMagnets=self.noMagnets,
+            length=self.length,
             barrier_length=self.barrier_length,
         )
 
-        length = 8 * self.noMagnets - 2 + 2 * self.barrier_length
+        length = self.length
 
         return kwant.plotter.plot(syst, show=False, unit='nn', site_size=0.20,
                                   site_color=lambda s: 'y'

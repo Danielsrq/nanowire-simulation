@@ -46,7 +46,7 @@ def weighting(arr: Array[float, int]) -> float:
 def get_spectrum_data(params: Dict) -> dict:
     nanowire = Nanowire(
         width=params['wire_width'],
-        noMagnets=params['N'],
+        length=params['N'],
         effective_mass=params['effective_mass'],
         muSc=params['muSc'],
         alpha_R=params['alpha_R'],
@@ -58,7 +58,7 @@ def get_spectrum_data(params: Dict) -> dict:
         barrier=params['barrier'],
         user_B=params['user_B'],
     )
-    spectrum_data = nanowire.spectrum(bValues=np.linspace(0, params['b_max'], 21))
+    spectrum_data = nanowire.spectrum(bValues=np.linspace(0, params['b_max'], 31))
     return spectrum_data
 
 
@@ -116,22 +116,31 @@ def simulated_annealing(x0: dict, x0_str: [str], T: float,
 
 
 x0 = dict()
-x0['wire_width'] = 7
-x0['N'] = 7
+x0['wire_width'] = 6
+x0['N'] = 80 # number of lattice sites
 x0['ratio'] = 0.5
 x0['M'] = 1
-x0['added_sinusoid'] = None
+x0['added_sinusoid'] =  None #"sine"
 x0['effective_mass'] = 0.023
 x0['alpha_R'] = 0.32
-x0['delta'] = 4.5E-05
-x0['b_max'] = 1
+x0['delta'] = 190E-6 # 4.5E-05
+x0['b_max'] = 2
 x0['user_B'] = None
 x0['mu'] = 0.019
-x0['muSc'] = 0.01661
+x0['muSc'] = 0.0165
 x0['barrier'] = 0.1
+x0['period'] = 4000 # in Angstroms
 
 x0_str = ['mu', 'muSc', 'barrier']
-T = 0.8 ** 10
+T = 1.0
 T_min = 0.00001
 alpha = 0.8
-simulated_annealing(x0, x0_str, T, T_min, alpha)
+# simulated_annealing(x0, x0_str, T, T_min, alpha)
+
+# 4t = 0.0166eV
+spectrum_data = get_spectrum_data(x0)
+plt.figure()
+plt.plot(spectrum_data["B"], spectrum_data["E"])
+plt.xlabel("B(T)")
+plt.ylabel("t(eV)")
+plt.show()

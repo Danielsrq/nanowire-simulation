@@ -42,11 +42,14 @@ def sinuB(theta, stagger_ratio):
 # This is the onsite Hamiltonian, this is where the B-field can be varied.
 
 
-def onsiteSc(site, muSc, t, B, Delta, M, addedSinu, barrier_length, stagger_ratio, user_B):
+def onsiteSc(site, muSc, t, B, Delta, M, addedSinu, barrier_length, stagger_ratio, user_B, period):
     gfactor = 10  # should be 10 in the real units
     if addedSinu == "sine":
-        counter = np.mod(site.pos[0] - 1 - barrier_length, 16)
-        theta = (counter/16) * 2*np.pi        
+        # Note that site.pos has real units i.e. 200A so all terms must be in Angstroms
+        counter = np.mod(site.pos[0] - (1 + barrier_length)*lattice_constant_InAs, period)
+        theta = (counter/period) * 2*np.pi  
+        # print ("Counter: " + str(counter))
+        # print ("theta: " + str(theta))
         # if -1 < counter < 4:
         #     theta = 0
         # elif 3 < counter < 8:
@@ -166,6 +169,6 @@ def make_wire(width, length, barrier_length, hamiltonian_wire=onsiteSc,
     return syst
 
 
-def NISIN(width=7, noMagnets=5, barrier_length=1):
-    length = 8 * noMagnets - 2 + 2 * barrier_length  # "2*(noMagnets - 1)"
+def NISIN(width=7, length=56, barrier_length=1):
+    length =  length # 8 * noMagnets - 2 + 2 * barrier_length  # "2*(noMagnets - 1)"
     return make_wire(width, length, barrier_length).finalized()
