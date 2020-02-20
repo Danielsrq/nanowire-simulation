@@ -58,7 +58,7 @@ def get_spectrum_data(params: Dict) -> dict:
         barrier=params['barrier'],
         user_B=params['user_B'],
     )
-    spectrum_data = nanowire.spectrum(bValues=np.linspace(0, params['b_max'], 31))
+    spectrum_data, _ = nanowire.spectrum(bValues=np.linspace(0, params['b_max'], 31))
     return spectrum_data
 
 
@@ -88,7 +88,7 @@ def simulated_annealing(x0: dict, x0_str: [str], T: float,
     while T > T_min:
         count = 0
         while(count < 100):
-            spectrum_data = get_spectrum_data(x_new)
+            spectrum_data, _ = get_spectrum_data(x_new)
             B, E = spectrum_data['B'], spectrum_data['E']
             B_step = B[1] - B[0]
             cost_new = get_cost_from_spectrum(E, B_step, weighting)
@@ -135,12 +135,12 @@ x0_str = ['mu', 'muSc', 'barrier']
 T = 1.0
 T_min = 0.00001
 alpha = 0.8
-# simulated_annealing(x0, x0_str, T, T_min, alpha)
+simulated_annealing(x0, x0_str, T, T_min, alpha)
 
 # 4t = 0.0166eV
-spectrum_data = get_spectrum_data(x0)
-plt.figure()
-plt.plot(spectrum_data["B"], spectrum_data["E"])
-plt.xlabel("B(T)")
-plt.ylabel("t(eV)")
-plt.show()
+# spectrum_data = get_spectrum_data(x0)
+# plt.figure()
+# plt.plot(spectrum_data["B"], spectrum_data["E"])
+# plt.xlabel("B(T)")
+# plt.ylabel("t(eV)")
+# plt.show()

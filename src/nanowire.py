@@ -79,6 +79,7 @@ class Nanowire:
         self.system = syst
         energies = []
         critB = 0
+        eigs_list = [] ## a list of eigenvalues and eigenvectors
         params = dict(
             muSc=self.muSc,
             mu=self.mu,
@@ -103,13 +104,14 @@ class Nanowire:
             H = H.tocsc()
             # k is the number of eigenvalues, and find them near sigma.
             eigs = scipy.sparse.linalg.eigsh(H, k=20, sigma=0)
+            eigs_list.append(eigs)
             eigs = np.sort(eigs[0])
             energies.append(eigs)
             if critB == 0 and np.abs(eigs[10] - eigs[9]) / 2 < 1e-3:
                 critB = b
 
         outcome = dict(B=bValues, E=energies, CritB=critB)
-        return outcome
+        return outcome, eigs_list
 
     def conductances(
         self,
