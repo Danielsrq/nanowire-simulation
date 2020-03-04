@@ -30,18 +30,25 @@ def interpolate_field(file_path: str, nx: int, ny: int):
     u, v = data_field[:, :, :, 0][:, :, zslice], \
         data_field[:, :, :, 1][:, :, zslice]
     x_grid, y_grid = np.mgrid[0:x, 0:y]
-    plt.imshow(((u**2 + v**2)**0.5).T, extent=(0, x, 0, y), origin='lower')
+    plt.imshow(u.T, extent=(0, x, 0, y), origin='lower')
     plt.show()
     x_points = [i for i in range(x)]
     y_points = [i for i in range(y)]
     points = np.transpose(np.vstack([x_grid.ravel(), y_grid.ravel()]))
-    x_grid_new, y_grid_new = np.mgrid[0:x:nx, 0:y:ny]
-    grid_z0 = griddata(points,
-                       u.flatten(),
-                       (x_grid_new, y_grid_new),
-                       method='cubic')
-    plt.imshow(grid_z0.T, extent=(0, x, 0, y), origin='lower')
+    x_grid_new, y_grid_new = np.mgrid[0:x-1:nx, 0:y-1:ny]
+    grid_u = griddata(points,
+                      u.flatten(),
+                      (x_grid_new, y_grid_new),
+                      method='cubic')
+    grid_v = griddata(points,
+                      v.flatten(),
+                      (x_grid_new, y_grid_new),
+                      method='cubic')
+    plt.imshow(grid_u.T, extent=(0, x, 0, y), origin='lower')
     plt.show()
+    plt.imshow(grid_v.T, extent=(0, x, 0, y), origin='lower')
+    plt.show()
+    return grid_u, grid_v
 
 
 interpolate_field('./data/strayfield_halbach_100_60.ovf', nx=1000j, ny=1000j)
