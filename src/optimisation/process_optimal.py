@@ -7,9 +7,11 @@ sys.path.append('../')
 from nanowire import Nanowire
 
 plt.rcParams['font.family'] = 'Times New Roman'
-plt.rcParams['lines.linewidth'] = 1
+plt.rcParams['font.size'] = 16
+plt.rcParams['lines.linewidth'] = 2
 plt.rcParams.update({'figure.autolayout': True})
 plt.rcParams['mathtext.default'] = 'regular'
+
 
 def make_wire_obj(params: Dict) -> dict:
     nanowire = Nanowire(
@@ -27,13 +29,12 @@ def make_wire_obj(params: Dict) -> dict:
         user_B=params['user_B'],
         period=params['period'],
         )
-    
     return nanowire
 
 
 def plot_fullwf(kwant_syst, eigslist, Bslice, wf_index):
     # eigslist = np.array(eigslist)
-    print ("slice is", Bslice)
+    print("slice is", Bslice)
     Eigval, Eigvec = eigslist[Bslice]
     wf0 = abs(Eigvec[0::4, wf_index])**2 
     wf1 = abs(Eigvec[1::4, wf_index])**2 
@@ -43,19 +44,19 @@ def plot_fullwf(kwant_syst, eigslist, Bslice, wf_index):
     up_wf = wf0 + wf3
     down_wf = wf1 + wf2
     print("Plotting wave function with index", wf_index)
-    print ("energy:", Eigval[wf_index])
+    print("energy:", Eigval[wf_index])
     # kwant.plotter.map(kwant_syst, total_wf)
     kwant.plot(syst, site_color=total_wf,
-               site_size=0.5, hop_lw=0, lead_site_symbol = 's', colorbar = False, cmap='gist_heat_r')
+               site_size=0.5, hop_lw=0, lead_site_symbol='s', colorbar=False, cmap='gist_heat_r')
     plt.savefig('fullwf.pdf', dpi=1000)
     kwant.plot(syst, site_color=up_wf,
-               site_size=0.5, hop_lw=0, lead_site_symbol = 's', colorbar = False, cmap='gist_heat_r')
-    plt.savefig('upwf.pdf', dpi=1000)
+               site_size=0.5, hop_lw=0, lead_site_symbol='s', colorbar=False, cmap='gist_heat_r')
+    # plt.savefig('upwf.pdf', dpi=1000)
     kwant.plot(syst, site_color=down_wf,
-               site_size=0.5, hop_lw=0, lead_site_symbol = 's', colorbar = False, cmap='gist_heat_r')
-    plt.savefig('downwf.pdf', dpi=1000)
-    
-    
+               site_size=0.5, hop_lw=0, lead_site_symbol='s', colorbar=False, cmap='gist_heat_r')
+    # plt.savefig('downwf.pdf', dpi=1000)
+
+
 def plot_spectrum_data(params: Dict) -> dict:
     nanowire = Nanowire(
         width=params['wire_width'],
@@ -119,14 +120,14 @@ spectrum_data, eigs_list = nanowire.spectrum(bValues=np.linspace(0, x0['b_max'],
 syst = nanowire.system
 B, E = spectrum_data['B'], spectrum_data['E']
 
-fig = plt.figure()
-plt.rcParams["figure.figsize"] = (7, 5)
-ax = fig.gca()
-ax.plot(B, E)
-ax.set_xlabel("Zeeman Field Strength [B]")
-ax.set_ylabel("Energies [t]")
-plt.savefig('spectrum_idealsine.pdf', dpi=1000)
-plt.show()
+# fig = plt.figure()
+# plt.rcParams["figure.figsize"] = (7, 5)
+# ax = fig.gca()
+# ax.plot(B, E)
+# ax.set_xlabel("Zeeman Field Strength [B]")
+# ax.set_ylabel("Energies [t]")
+# plt.savefig('spectrum_idealsine.pdf', dpi=1000)
+# plt.show()
 
 Bstep = B[1]- B[0]
 Bslice = int(1 / Bstep)
