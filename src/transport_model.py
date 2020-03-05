@@ -86,8 +86,8 @@ def onsiteSc(site, muSc, t, B, Delta, M, addedSinu,
         # print (user_B[current_xsite][current_ysite][0], user_B[current_xsite][current_ysite][1])
         return (
             (4 * t - muSc)*tauZ + (0.5*gfactor*bohr_magneton*B*sigX) + Delta*tauX
-            + user_B[current_xsite][current_ysite][0] * sigX
-            + user_B[current_xsite][current_ysite][1] * sigY)
+            + 0.5*gfactor*bohr_magneton*user_B[current_xsite][current_ysite][0] * sigX
+            + 0.5*gfactor*bohr_magneton*user_B[current_xsite][current_ysite][1] * sigY)
 
     else:
         return (
