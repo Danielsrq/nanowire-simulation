@@ -117,19 +117,19 @@ def simulated_annealing(x0: dict, x0_str: [str], T: float,
 
 x0 = dict()
 x0['wire_width'] = 6
-x0['N'] = 80 # number of lattice sites
+x0['N'] = 80  # number of lattice sites
 x0['ratio'] = 0.5
 x0['M'] = 1
-x0['added_sinusoid'] = None #"sine"
+x0['added_sinusoid'] = None  # "sine"
 x0['effective_mass'] = 0.023
 x0['alpha_R'] = 0.32
-x0['delta'] = 190E-6 # 4.5E-05
+x0['delta'] = 190E-6  # 4.5E-05
 x0['b_max'] = 2
 x0['user_B'] = None
 x0['mu'] = 0.019
 x0['muSc'] = 0.0165
 x0['barrier'] = 0.1
-x0['period'] = 4000 # in Angstroms
+x0['period'] = 4000  # in Angstroms
 
 x0_str = ['mu', 'muSc', 'barrier']
 T = 1.0

@@ -153,10 +153,11 @@ def simulation_all(params, row="skip", date="no-date", scratch="./Scratch/"):
         new_params["N"] = N
         simulation_single(new_params, row, date, scratch)
 
+
 def simulation_all_csv(csv_file, date):
     df = pd.read_csv(csv_file)
     for index, row in df.iterrows():
-        simulation_single(row,row=index,date=date)
+        simulation_single(row, row=index, date=date)
 
 
 if __name__ == "__main__":

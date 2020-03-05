@@ -8,13 +8,15 @@ def get_meta_data(file_path: str):
     headers = {}
     with open(file_path) as f:
         for line in f:
-            if line[0] != '#': break
+            if line[0] != '#':
+                break
             if ':' in line:
                 key_value = line.split('# ')[1].split(':')
                 key, value = key_value[0], key_value[1].split('\n')[0].strip()
                 headers[key] = value
-    return int(headers['xnodes']), int(headers['ynodes']), int(headers['znodes']), \
-           float(headers['xstepsize']), float(headers['ystepsize']), float(headers['zstepsize'])
+    return int(headers['xnodes']), int(headers['ynodes']), \
+        int(headers['znodes']), float(headers['xstepsize']), \
+        float(headers['ystepsize']), float(headers['zstepsize'])
 
 
 def interpolate_field(file_path: str, nx: int, ny: int):
@@ -28,7 +30,10 @@ def interpolate_field(file_path: str, nx: int, ny: int):
     data = np.array(np.loadtxt(file_path))
     data_field = data.reshape(x, y, z, 3, order="F")
     u, v = data_field[:, :, :, 0], data_field[:, :, :, 1]
-    u_sliced, v_sliced = u[:, 143:167, zslice], v[:, 143:167, zslice]
+    y_start_idx = int(y/2) - 12
+    y_end_idx = int(y/2) + 12
+    u_sliced, v_sliced = u[:, y_start_idx:y_end_idx, zslice], \
+        v[:, y_start_idx:y_end_idx, zslice]
     x_grid, y_grid = np.mgrid[0:x, 0:24]
     x_points = [i for i in range(x)]
     y_points = [i for i in range(24)]

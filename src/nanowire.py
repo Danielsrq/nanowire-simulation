@@ -34,7 +34,7 @@ class Nanowire:
         delta=0.1,
         barrier=2.0,
         user_B=None,
-        period= 16 # uses lattice size
+        period=16  # uses lattice size
     ):
         # Wire Physical Properties
         self.width = width
@@ -43,7 +43,9 @@ class Nanowire:
         self.barrier_length = barrier_length
 
         # Superconducting components
-        self.t = 3.83 / (effective_mass*(lattice_constant_InAs**2))  # (hbar**2)/(2*effective_mass*electron_mass*(lattice_constant_InAs**2))# 0.5 / effective_mass
+        # (hbar**2)/(2*effective_mass*electron_mass*(lattice_constant_InAs**2))
+        # 0.5 / effective_mass
+        self.t = 3.83 / (effective_mass*(lattice_constant_InAs**2))
         self.M = M
         self.muSc = muSc
         self.alpha = alpha_R/lattice_constant_InAs
@@ -151,7 +153,7 @@ class Nanowire:
                 conduct = (
                     smatrix.submatrix((0, 0), (0, 0)).shape[0]  # N
                     - smatrix.transmission((0, 0), (0, 0))  # R_ee
-                    + smatrix.transmission((0, 1), (0, 0)) # maybe I need to update the 1 to a lattice_constant?
+                    + smatrix.transmission((0, 1), (0, 0))  # maybe I need to update the 1 to a lattice_constant?
                 )  # R_he
                 cond.append(conduct)
                 if (

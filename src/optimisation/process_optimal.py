@@ -98,6 +98,7 @@ def plot_cost():
     plt.scatter([i+1 for i in range(len(costs))], costs, c='black', marker='x')
     plt.show()
 
+
 # 4t = 0.016600eV
 # k_B (Boltzmann) = 8.617E-5 eV K^-1 ## at 10mK, kT ~ 8.6E-7
 x0 = dict()
@@ -108,16 +109,19 @@ x0['M'] = 0.5
 x0['added_sinusoid'] = None
 x0['effective_mass'] = 0.023
 x0['alpha_R'] = 0.32
-x0['delta'] = 190E-6 #4.5E-05
+x0['delta'] = 190E-6  # 4.5E-05
 x0['b_max'] = 2
-x0['user_B'] = interpolate_field('./data/strayfield_halbach_100_60.ovf', nx=(80j), ny=(6j))
+x0['user_B'] = interpolate_field('./data/strayfield_halbach_100_60.ovf',
+                                 nx=(80j), ny=(6j))
 x0['mu'] = 0.019
 x0['muSc'] = 0.0165
 x0['barrier'] = 0.1
-x0['period'] = 4000 # in Angstroms
+x0['period'] = 4000  # in Angstroms
 
 nanowire = make_wire_obj(x0)
-spectrum_data, eigs_list = nanowire.spectrum(bValues=np.linspace(0, x0['b_max'], 31))
+spectrum_data, eigs_list = nanowire.spectrum(bValues=np.linspace(0,
+                                                                 x0['b_max'],
+                                                                 31))
 syst = nanowire.system
 B, E = spectrum_data['B'], spectrum_data['E']
 
