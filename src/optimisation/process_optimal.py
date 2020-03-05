@@ -2,6 +2,7 @@ import kwant
 import matplotlib.pyplot as plt
 import numpy as np
 from typing import Dict
+from process_field import interpolate_field
 import sys
 sys.path.append('../')
 from nanowire import Nanowire
@@ -104,12 +105,12 @@ x0['wire_width'] = 6
 x0['N'] = 80
 x0['ratio'] = 0.5
 x0['M'] = 0.5
-x0['added_sinusoid'] = "sine"
+x0['added_sinusoid'] = None
 x0['effective_mass'] = 0.023
 x0['alpha_R'] = 0.32
 x0['delta'] = 190E-6 #4.5E-05
 x0['b_max'] = 2
-x0['user_B'] = None
+x0['user_B'] = interpolate_field('./data/strayfield_halbach_100_60.ovf', nx=(80j), ny=(6j))
 x0['mu'] = 0.019
 x0['muSc'] = 0.0165
 x0['barrier'] = 0.1
@@ -120,18 +121,18 @@ spectrum_data, eigs_list = nanowire.spectrum(bValues=np.linspace(0, x0['b_max'],
 syst = nanowire.system
 B, E = spectrum_data['B'], spectrum_data['E']
 
-# fig = plt.figure()
-# plt.rcParams["figure.figsize"] = (7, 5)
-# ax = fig.gca()
-# ax.plot(B, E)
-# ax.set_xlabel("Zeeman Field Strength [B]")
-# ax.set_ylabel("Energies [t]")
+fig = plt.figure()
+plt.rcParams["figure.figsize"] = (7, 5)
+ax = fig.gca()
+ax.plot(B, E)
+ax.set_xlabel("Zeeman Field Strength [B]")
+ax.set_ylabel("Energies [t]")
 # plt.savefig('spectrum_idealsine.pdf', dpi=1000)
-# plt.show()
+plt.show()
 
-Bstep = B[1]- B[0]
-Bslice = int(1 / Bstep)
-plot_fullwf(syst, eigs_list, Bslice, 0)   
+# Bstep = B[1]- B[0]
+# Bslice = int(1 / Bstep)
+# plot_fullwf(syst, eigs_list, Bslice, 0)   
 
 
 # plot_cost()
