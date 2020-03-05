@@ -47,12 +47,13 @@ def interpolate_field(file_path: str, nx: int, ny: int):
                       v_sliced.flatten(),
                       (x_grid_new, y_grid_new),
                       method='cubic')
-    plt.imshow(v_sliced.T, extent=(0, x, 0, 24), origin='lower')
-    plt.show()
-    plt.imshow(grid_u.T, extent=(0, x, 0, 24), origin='lower')
-    plt.show()
-    plt.imshow(grid_v.T, extent=(0, x, 0, 24), origin='lower')
-    plt.show()
+    # plt.figure()
+    # plt.imshow(v_sliced.T, extent=(0, x, 0, 24), origin='lower')
+    # plt.show()
+    # plt.imshow(grid_u.T, extent=(0, x, 0, 24), origin='lower')
+    # plt.show()
+    # plt.imshow(grid_v.T, extent=(0, x, 0, 24), origin='lower')
+    # plt.show()
     vector_field = np.stack((grid_u, grid_v), axis=-1)
     return vector_field
 

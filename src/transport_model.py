@@ -81,9 +81,11 @@ def onsiteSc(site, muSc, t, B, Delta, M, addedSinu,
         """ Assumes 2D array which maps onto the space of the field such that
         (i,j) is the Bvector as position (i,j); user_B[i][j][0] and
         user_B[i][j][1] are Bx and By"""
-        current_xsite, current_ysite = site.pos[0], site.pos[1]
+        current_xsite, current_ysite = int(site.pos[0]/lattice_constant_InAs), int(site.pos[1]/lattice_constant_InAs)
+        # print (current_xsite, current_ysite)
+        # print (user_B[current_xsite][current_ysite][0], user_B[current_xsite][current_ysite][1])
         return (
-            (4 * t - muSc)*tauZ + (gfactor*bohr_magneton*B*sigX) + Delta*tauX
+            (4 * t - muSc)*tauZ + (0.5*gfactor*bohr_magneton*B*sigX) + Delta*tauX
             + user_B[current_xsite][current_ysite][0] * sigX
             + user_B[current_xsite][current_ysite][1] * sigY)
 
