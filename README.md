@@ -1,11 +1,5 @@
 # Simulations of transport properties of a nanowire in a magnetic field
 
-## Dependencies
-
-### From pip
-
-- numpy
-- scipy
-- [My kwant fork](https://github.com/mikeyh30/kwant) (checkout v0.1)
-- tinyarray
-- pyyaml
+This work is built on code done in the following two repositories.
+1. https://github.com/dk1713/Nanowire
+2. https://github.com/mikeyh30/kwant
